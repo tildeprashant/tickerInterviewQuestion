@@ -38,19 +38,19 @@ endif
 # Add inputs and outputs from these tool invocations to the build variables 
 
 # All Target
-all: testCase
+all: tickerInterviewQuestion
 
 # Tool invocations
-testCase: $(OBJS) $(USER_OBJS)
+tickerInterviewQuestion: $(OBJS) $(USER_OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: GCC C++ Linker'
-	g++ -L/home/prashant/Downloads/googletest/lib -o "testCase" $(OBJS) $(USER_OBJS) $(LIBS)
+	g++ -L../googletest/lib -o "tickerInterviewQuestion" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 
 # Other Targets
 clean:
-	-$(RM) $(CC_DEPS)$(C++_DEPS)$(EXECUTABLES)$(C_UPPER_DEPS)$(CXX_DEPS)$(OBJS)$(CPP_DEPS)$(C_DEPS) testCase
+	-$(RM) $(CC_DEPS)$(C++_DEPS)$(EXECUTABLES)$(C_UPPER_DEPS)$(CXX_DEPS)$(OBJS)$(CPP_DEPS)$(C_DEPS) tickerInterviewQuestion
 	-@echo ' '
 
 .PHONY: all clean dependents
