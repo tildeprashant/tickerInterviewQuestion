@@ -1,12 +1,10 @@
+
 /*
  * InputReader_test.cpp
  *
  *  Created on: 02-Jun-2019
  *      Author: prashant
  */
-
-
-
 // Copyright 2005, Google Inc.
 // All rights reserved.
 //
@@ -85,6 +83,26 @@ TEST(ReadInputFileTest, EmptyFileName) {
 
 	InputReader ip;
 	EXPECT_EQ(1, ip.readInputFile(""));
+}
+
+
+TEST(ReadInputFileTest, fileReadSuccess) {
+
+	InputReader ip;
+	EXPECT_EQ(0, ip.readInputFile("input.ini"));
+}
+
+TEST(ReadInputFileTest, checkTokenizedVector) {
+
+	InputReader ip;
+	ip.readInputFile("input.ini");
+    auto vec=ip.getInputRecords();
+	for(auto& i:vec){
+		for(auto& j:i){
+			cout<<"first: "<<j.first<<", second: "<<j.second<<endl;
+		}
+	}
+	EXPECT_EQ(0, 0);
 }
 
 }  // namespace

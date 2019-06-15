@@ -15,14 +15,14 @@ using namespace std;
 
 class InputReader {
 	string m_inputSpecefier;
-	vector< map<string, string > > m_inputRecords;
+	vector< multimap<string, string > > m_inputRecords;
 public:
 	InputReader();
 	size_t readInputFile(const string& fileName);
 	string getInputSpecifier() ;
 	size_t readRecords();
-	vector< map<string, string > > getInputRecords();
-
+	vector< multimap<string, string > > getInputRecords();
+	vector<string> tokenize(const string& input, string delim="\\s+");
 	virtual ~InputReader();
 };
 
