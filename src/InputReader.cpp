@@ -16,8 +16,9 @@ InputReader::InputReader():m_inputSpecefier{""} {
 
 }
 
-size_t InputReader::readInputFile(const string& fileName) {
+size_t InputReader::readInputFile() {
 	size_t ret = 0;
+	auto fileName = getFileNameIpFormat();
 	if(fileName.size()<1){
 		ret = 1;
 	}
@@ -45,7 +46,28 @@ string InputReader::getInputSpecifier() {
 
 
 size_t InputReader::readRecords() {
-	return 1;
+	size_t ret = 0;
+	string line = "";
+	auto fileName = getFileNameIpRecord();
+	if(fileName.size()<1){
+		ret = 1;
+	}
+
+	ifstream inFile;
+	try{
+		inFile.open(fileName.c_str());
+	}
+	catch(exception& e){
+		cout<<e.what()<<endl;
+	}
+
+	if (inFile.is_open()){
+		while(getline(inFile,line)) {
+			cout<<line<<endl;
+		}
+		ret = 0;
+	}
+
 }
 
 vector<multimap<string, string> > InputReader::getInputRecords()  {
@@ -63,11 +85,24 @@ vector<multimap<string, string> > InputReader::getInputRecords()  {
 
 vector<string> InputReader::tokenize(const string& input, string delim) {
     regex regStr(delim);
-    sregex_token_iterator it(input.begin(), input.end(), regStr, -1);
-    sregex_token_iterator end;
+    sregex_token_iterator it(input.begin(), input.end(), regStr, -1),end;
+    //sregex_token_iterator end;
     vector<string> v;
     copy(it,end,back_inserter(v));
     return move(v);
+}
+
+void InputReader::setFileName(string format, string recordFile) {
+	m_fileIpFormat = format;
+	m_fileIpRecord = recordFile;
+}
+
+const string& InputReader::getFileNameIpFormat() const {
+	return m_fileIpFormat;
+}
+
+const string& InputReader::getFileNameIpRecord() const {
+	return m_fileIpRecord;
 }
 
 InputReader::~InputReader() {

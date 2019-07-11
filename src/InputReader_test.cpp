@@ -82,20 +82,22 @@ namespace {
 TEST(ReadInputFileTest, EmptyFileName) {
 
 	InputReader ip;
-	EXPECT_EQ(1, ip.readInputFile(""));
+	EXPECT_EQ(1, ip.readInputFile());
 }
 
 
 TEST(ReadInputFileTest, fileReadSuccess) {
 
 	InputReader ip;
-	EXPECT_EQ(0, ip.readInputFile("input.ini"));
+	ip.setFileName("input.ini","marketdata_for_interview.csv");
+	EXPECT_EQ(0, ip.readInputFile());
+	EXPECT_EQ(0, ip.readRecords());
 }
 
 TEST(ReadInputFileTest, checkTokenizedVector) {
 
 	InputReader ip;
-	ip.readInputFile("input.ini");
+	ip.readInputFile();
     auto vec=ip.getInputRecords();
 	for(auto& i:vec){
 		for(auto& j:i){
