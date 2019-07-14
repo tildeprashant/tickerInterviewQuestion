@@ -59,6 +59,7 @@ size_t InputReader::readRecords() {
 	}
 	catch(exception& e){
 		cout<<e.what()<<endl;
+		inFile.close();
 	}
 
 	if (inFile.is_open()){
@@ -67,6 +68,7 @@ size_t InputReader::readRecords() {
 		}
 		ret = 0;
 	}
+	inFile.close();
 
 }
 
