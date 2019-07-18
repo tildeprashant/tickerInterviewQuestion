@@ -65,22 +65,16 @@ size_t InputReader::readRecords() {
 	if (inFile.is_open()){
 		while(getline(inFile,line)) {
 			cout<<line<<endl;
+			auto v = tokenize(line,R"(,|\r)");
 		}
 		ret = 0;
 	}
 	inFile.close();
-
 }
 
-vector<multimap<string, string> > InputReader::getInputRecords()  {
-	auto v = tokenize(this->getInputSpecifier(),R"(<|(>,<)|>)");
+vector<string> InputReader::getInputRecords()  {
 
-	for(auto& item:v) {
-		cout<<item<<endl;
-		multimap<string,string> m;
-		m.insert(make_pair(item,""));
-		m_inputRecords.push_back(move(m));
-	}
+	m_inputRecords = tokenize(this->getInputSpecifier(),R"(<|(>,<)|>)");
 
 	return m_inputRecords;
 }
@@ -105,6 +99,13 @@ const string& InputReader::getFileNameIpFormat() const {
 
 const string& InputReader::getFileNameIpRecord() const {
 	return m_fileIpRecord;
+}
+
+void InputReader::fillTickerInfo(auto& inputVector) {
+	//for(auto& item:m_inputRecords){
+		//if((m_tickerInfo.insert(std::make_pair<string,tickerInfo>)).second == false)
+//	}
+
 }
 
 InputReader::~InputReader() {

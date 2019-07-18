@@ -100,9 +100,7 @@ TEST(ReadInputFileTest, checkTokenizedVector) {
 	ip.readInputFile();
     auto vec=ip.getInputRecords();
 	for(auto& i:vec){
-		for(auto& j:i){
-			cout<<"first: "<<j.first<<", second: "<<j.second<<endl;
-		}
+		cout<<"item: "<<i<<endl;
 	}
 	EXPECT_EQ(0, 0);
 }
