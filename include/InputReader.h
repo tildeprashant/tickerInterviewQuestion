@@ -16,7 +16,7 @@ using namespace std;
 
 class InputReader {
 	string m_inputSpecefier;
-	vector<string> m_inputRecords;
+	std::map<string,int> m_inputRecords;
 	multimap<std::string,tickerInfo> m_tickerInfo;
 	string m_fileIpFormat;
 	string m_fileIpRecord;
@@ -25,7 +25,7 @@ public:
 	size_t readInputFile();
 	string getInputSpecifier() ;
 	size_t readRecords();
-	vector< string > getInputRecords();
+	std::map<string,int> getInputRecords();
 	vector<string> tokenize(const string& input, string delim="\\s+");
 	void setFileName(string format, string recordFile);
 	const string& getFileNameIpFormat() const;

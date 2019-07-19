@@ -66,15 +66,22 @@ size_t InputReader::readRecords() {
 		while(getline(inFile,line)) {
 			cout<<line<<endl;
 			auto v = tokenize(line,R"(,|\r)");
+			this->fillTickerInfo(v);
 		}
 		ret = 0;
 	}
 	inFile.close();
 }
 
-vector<string> InputReader::getInputRecords()  {
+map<string,int> InputReader::getInputRecords()  {
 
-	m_inputRecords = tokenize(this->getInputSpecifier(),R"(<|(>,<)|>)");
+	auto v = tokenize(this->getInputSpecifier(),R"(<|(>,<)|>)");
+	int i = 0;
+
+	/* prepare metric index map */
+	for(auto& item:v){
+		m_inputRecords.insert(std::make_pair(item,i++));
+	}
 
 	return m_inputRecords;
 }
@@ -101,11 +108,29 @@ const string& InputReader::getFileNameIpRecord() const {
 	return m_fileIpRecord;
 }
 
-void InputReader::fillTickerInfo(auto& inputVector) {
-	//for(auto& item:m_inputRecords){
-		//if((m_tickerInfo.insert(std::make_pair<string,tickerInfo>)).second == false)
-//	}
+void InputReader::fillTickerInfo(auto& indexMap) {
+	tickerInfo info;
 
+
+	auto key = indexMap[m_inputRecords["Ticker"]];
+	auto it = m_tickerInfo.find(key);
+	if(it != m_tickerInfo.end()){
+		it->second.pvTimestamp->push_back(stoi(indexMap[m_inputRecords["Timestamp"]]));
+		it->second.pvBid->push_back(stof(indexMap[m_inputRecords["Bid"]]));
+		it->second.pvBidSize->push_back(stoi(indexMap[m_inputRecords["BidSize"]]));
+		it->second.pvAsk->push_back(stof(indexMap[m_inputRecords["Ask"]]));
+		it->second.pvAskSize->push_back(stoi(indexMap[m_inputRecords["AskSize"]]));
+		it->second.pvVolume->push_back(stoi(indexMap[m_inputRecords["Volume"]]));
+	}
+	else{
+		info.pvTimestamp = std::make_shared<std::vector<long> >(1,stoi(indexMap[m_inputRecords["Timestamp"]]));
+		info.pvBid = std::make_shared<std::vector<double> >(1,stof(indexMap[m_inputRecords["Bid"]]));
+		info.pvBidSize = std::make_shared<std::vector<int> >(1,stoi(indexMap[m_inputRecords["BidSize"]]));
+		info.pvAsk = std::make_shared<std::vector<double> >(1,stof(indexMap[m_inputRecords["Ask"]]));
+		info.pvAskSize = std::make_shared<std::vector<int> >(1,stoi(indexMap[m_inputRecords["AskSize"]]));
+		info.pvVolume = std::make_shared<std::vector<int> >( 1,stoi(indexMap[m_inputRecords["Volume"]]));
+		m_tickerInfo.insert(make_pair(key,info));
+	}
 }
 
 InputReader::~InputReader() {
