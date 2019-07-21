@@ -5,116 +5,65 @@
  *  Created on: 02-Jun-2019
  *      Author: prashant
  */
-// Copyright 2005, Google Inc.
-// All rights reserved.
-//
-// Redistribution and use in source and binary forms, with or without
-// modification, are permitted provided that the following conditions are
-// met:
-//
-//     * Redistributions of source code must retain the above copyright
-// notice, this list of conditions and the following disclaimer.
-//     * Redistributions in binary form must reproduce the above
-// copyright notice, this list of conditions and the following disclaimer
-// in the documentation and/or other materials provided with the
-// distribution.
-//     * Neither the name of Google Inc. nor the names of its
-// contributors may be used to endorse or promote products derived from
-// this software without specific prior written permission.
-//
-// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-// A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
-// OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-// SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-// LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-// A sample program demonstrating using Google C++ testing framework.
-
-// This sample shows how to write a simple unit test for a function,
-// using Google C++ testing framework.
-//
-// Writing a unit test using Google C++ testing framework is easy as 1-2-3:
+#include "InputReader_test.h"
 
 
-// Step 1. Include necessary header files such that the stuff your
-// test logic needs is declared.
-//
-// Don't forget gtest.h, which declares the testing framework.
-
-#include <limits.h>
-#include "InputReader.h"
-#include "gtest/gtest.h"
-namespace {
-
-// Step 2. Use the TEST macro to define your tests.
-//
-// TEST has two parameters: the test case name and the test name.
-// After using the macro, you should define your test logic between a
-// pair of braces.  You can use a bunch of macros to indicate the
-// success or failure of a test.  EXPECT_TRUE and EXPECT_EQ are
-// examples of such macros.  For a complete list, see gtest.h.
-//
-// <TechnicalDetails>
-//
-// In Google Test, tests are grouped into test cases.  This is how we
-// keep test code organized.  You should put logically related tests
-// into the same test case.
-//
-// The test case name and the test name should both be valid C++
-// identifiers.  And you should not use underscore (_) in the names.
-//
-// Google Test guarantees that each test you define is run exactly
-// once, but it makes no guarantee on the order the tests are
-// executed.  Therefore, you should write your tests in such a way
-// that their results don't depend on their order.
-//
-// </TechnicalDetails>
-
-
-
-// Tests factorial of 0.
-TEST(ReadInputFileTest, EmptyFileName) {
+TEST_F(InputReader_test, testEmptyFileName) {
 
 	InputReader ip;
-	EXPECT_EQ(1, ip.readInputFile());
+	EXPECT_EQ((size_t)1, ip.readInputFile());
+}
+
+TEST_F(InputReader_test, testMetricCount) {
+
+	EXPECT_EQ((size_t)0, ip.readInputFile());
+    EXPECT_EQ((size_t)7,ip.getInputRecords().size());
+}
+
+TEST_F(InputReader_test, fileReadSuccess) {
+	EXPECT_EQ((size_t)0, ip.readInputFile());
+	EXPECT_EQ((size_t)0, ip.readRecords());
 }
 
 
-TEST(ReadInputFileTest, fileReadSuccess) {
+TEST_F(InputReader_test, verifyTickerInfo) {
+	EXPECT_EQ((size_t)0, ip.readInputFile());
+	EXPECT_EQ((size_t)0, ip.readRecords());
+	auto tInfo = ip.getTickerInfo();
 
-	InputReader ip;
-	ip.setFileName("input.ini","marketdata_for_interview.csv");
-	EXPECT_EQ(0, ip.readInputFile());
-	EXPECT_EQ(0, ip.readRecords());
+	auto it = tInfo.find("T");
+	GTEST_ASSERT_NE(it,tInfo.end());
+	EXPECT_EQ(tInfo.at("T").pvTimestamp->at(0),15051426);
+	EXPECT_FLOAT_EQ(tInfo.at("T").pvBid->at(0),47.46);
+	EXPECT_EQ(tInfo.at("T").pvBidSize->at(0),14);
+	EXPECT_FLOAT_EQ(tInfo.at("T").pvAsk->at(0),47.52);
+	EXPECT_EQ(tInfo.at("T").pvAskSize->at(0),44);
+	EXPECT_EQ(tInfo.at("T").pvVolume->at(0),10788);
+
+
+	it = tInfo.find("BC");
+	GTEST_ASSERT_NE(it,tInfo.end());
+	EXPECT_EQ(tInfo.at("BC").pvTimestamp->at(0),15051426);
+	EXPECT_FLOAT_EQ(tInfo.at("BC").pvBid->at(0),77.71);
+	EXPECT_EQ(tInfo.at("BC").pvBidSize->at(0),12);
+	EXPECT_FLOAT_EQ(tInfo.at("BC").pvAsk->at(0),79.13);
+	EXPECT_EQ(tInfo.at("BC").pvAskSize->at(0),12);
+	EXPECT_EQ(tInfo.at("BC").pvVolume->at(0),14);
+
+	EXPECT_EQ(tInfo.at("BC").pvTimestamp->at(1),15051427);
+	EXPECT_FLOAT_EQ(tInfo.at("BC").pvBid->at(1),90);
+	EXPECT_EQ(tInfo.at("BC").pvBidSize->at(1),10);
+	EXPECT_FLOAT_EQ(tInfo.at("BC").pvAsk->at(1),99.23);
+	EXPECT_EQ(tInfo.at("BC").pvAskSize->at(1),13);
+	EXPECT_EQ(tInfo.at("BC").pvVolume->at(1),13);
+
+	EXPECT_EQ(tInfo.at("BC").pvTimestamp->at(2),15051428);
+	EXPECT_FLOAT_EQ(tInfo.at("BC").pvBid->at(2),95.11);
+	EXPECT_EQ(tInfo.at("BC").pvBidSize->at(2),11);
+	EXPECT_FLOAT_EQ(tInfo.at("BC").pvAsk->at(2),98.23);
+	EXPECT_EQ(tInfo.at("BC").pvAskSize->at(2),12);
+	EXPECT_EQ(tInfo.at("BC").pvVolume->at(2),11);
+
 }
 
-TEST(ReadInputFileTest, checkTokenizedVector) {
-
-	InputReader ip;
-	ip.readInputFile();
-    auto m=ip.getInputRecords();
-	for(auto& i:m){
-		cout<<"val: "<<i.first<<", index: "<<i.second<<endl;
-	}
-	EXPECT_EQ(0, 0);
-}
-
-}  // namespace
-
-// Step 3. Call RUN_ALL_TESTS() in main().
-//
-// We do this by linking in src/gtest_main.cc file, which consists of
-// a main() function which calls RUN_ALL_TESTS() for us.
-//
-// This runs all the tests you've defined, prints the result, and
-// returns 0 if successful, or 1 otherwise.
-//
-// Did you notice that we didn't register the tests?  The
-// RUN_ALL_TESTS() macro magically knows about all the tests we
-// defined.  Isn't this convenient?
