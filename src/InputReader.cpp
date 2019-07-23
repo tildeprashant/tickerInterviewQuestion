@@ -133,27 +133,45 @@ void InputReader::fillTickerInfo(auto& indexMap) {
 	tickerInfo info;
 
 	auto key = indexMap[m_inputRecords["Ticker"]];
+
+	auto tempDiffOfAskAndBid = stof(indexMap[m_inputRecords.at("Ask")]) - stof(indexMap[m_inputRecords.at("Bid")]);
+
+	auto tempVolume = stoi(indexMap[m_inputRecords.at("Volume")]);
+
+	auto tempBidRatioNumerator = stof(indexMap[m_inputRecords.at("Bid")]) * stoi(indexMap[m_inputRecords.at("AskSize")]) +
+					             stof(indexMap[m_inputRecords.at("Ask")]) * stoi(indexMap[m_inputRecords.at("BidSize")]);
+
+	auto tempBidRatioDenominator = stof(indexMap[m_inputRecords.at("AskSize")]) + stoi(indexMap[m_inputRecords.at("BidSize")]);
+
+
+
 	auto it = m_tickerInfo.find(key);
 	/* if ticker any ticker is already present in the map augument its information else create it. */
 	if(it != m_tickerInfo.end()){
 		/*extract the index of the metrics from input metrics format map and use index to fill the metrics info */
-		it->second.pvTimestamp->push_back(stoi(indexMap[m_inputRecords["Timestamp"]]));
-		it->second.pvBid->push_back(stof(indexMap[m_inputRecords["Bid"]]));
-		it->second.pvBidSize->push_back(stoi(indexMap[m_inputRecords["BidSize"]]));
-		it->second.pvAsk->push_back(stof(indexMap[m_inputRecords["Ask"]]));
-		it->second.pvAskSize->push_back(stoi(indexMap[m_inputRecords["AskSize"]]));
-		it->second.pvVolume->push_back(stoi(indexMap[m_inputRecords["Volume"]]));
+		it->second.pvDiffOfAskAndBid->push_back(tempDiffOfAskAndBid);
+		it->second.pvVolume->push_back(tempVolume);
+
+		it->second.pvTimeDiffBtwnTicker->push_back(stol(indexMap[m_inputRecords.at("Timestamp")]) - it->second.lastTimestamp);
+		it->second.lastTimestamp = stol(indexMap[m_inputRecords.at("Timestamp")]);
+
+		it->second.pvBidRatioNumerator->push_back(stof(indexMap[m_inputRecords.at("Ask")]));
+		it->second.pvBidRatioDenominator->push_back(stoi(indexMap[m_inputRecords.at("AskSize")]));
 	}
 	else{
 		/*extract the index of the metrics from input metrics format map and use index to fill the metrics info */
-		info.pvTimestamp = std::make_shared<std::vector<long> >(1,stoi(indexMap[m_inputRecords["Timestamp"]]));
-		info.pvBid = std::make_shared<std::vector<double> >(1,stof(indexMap[m_inputRecords["Bid"]]));
-		info.pvBidSize = std::make_shared<std::vector<int> >(1,stoi(indexMap[m_inputRecords["BidSize"]]));
-		info.pvAsk = std::make_shared<std::vector<double> >(1,stof(indexMap[m_inputRecords["Ask"]]));
-		info.pvAskSize = std::make_shared<std::vector<int> >(1,stoi(indexMap[m_inputRecords["AskSize"]]));
 
-		//m_inputRecords.at("Volume");
-		info.pvVolume = std::make_shared<std::vector<int> >( 1,stoi(indexMap[m_inputRecords.at("Volume")]));
+		info.pvDiffOfAskAndBid = std::make_shared<std::vector<double> >(1,tempDiffOfAskAndBid);
+
+		info.pvVolume = std::make_shared<std::vector<int> >( 1,tempVolume);
+
+		info.pvTimeDiffBtwnTicker = std::make_shared<std::vector<long> >( 1,stol(indexMap[m_inputRecords.at("Timestamp")]));
+
+		info.pvBidRatioNumerator = std::make_shared<std::vector<double> >( 1,tempBidRatioNumerator);
+
+		info.pvBidRatioDenominator = std::make_shared<std::vector<int> >( 1,tempBidRatioDenominator);
+		info.lastTimestamp = stol(indexMap[m_inputRecords.at("Timestamp")]);
+
 		m_tickerInfo.insert(make_pair(key,info));
 	}
 }

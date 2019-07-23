@@ -5,12 +5,13 @@
 
 
 typedef struct tickerInfo {
-	std::shared_ptr< std::vector<long> > pvTimestamp;   //Timestamp
-	std::shared_ptr<std::vector<double> > pvBid; //Bid
-	std::shared_ptr<std::vector<int> > pvBidSize; //BidSize
-	std::shared_ptr<std::vector<double> > pvAsk;  //Ask
-	std::shared_ptr<std::vector<int> > pvAskSize; //AskSize
+
+	std::shared_ptr<std::vector<double> > pvDiffOfAskAndBid; //Ask - Bid
 	std::shared_ptr<std::vector<int> > pvVolume;  //Volume
+	std::shared_ptr< std::vector<long> > pvTimeDiffBtwnTicker;   //Timestamp difference between two consecutive bids
+	std::shared_ptr<std::vector<double> > pvBidRatioNumerator;  //Bid*AskSize + Ask*BidSize
+	std::shared_ptr<std::vector<int> > pvBidRatioDenominator;  //AskSize+BidSize
+	long lastTimestamp;  // last value of timestamp
 }tickerInfo;
 
 #endif  // TICKER_INFO_H_
