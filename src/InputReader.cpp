@@ -34,7 +34,6 @@ size_t InputReader::readInputFile() {
 
 	if (inFile.is_open()){
 		getline(inFile,m_inputSpecefier);
-		std::cout<<m_inputSpecefier<<"\n";
 		this->getInputRecords();
 		ret = 0;
 	}
@@ -67,7 +66,6 @@ size_t InputReader::readRecords() {
 
 	if (inFile.is_open()){
 		while(getline(inFile,line)) {
-			std::cout<<line<<"\n";
 			auto v = tokenize(line,R"(,|\r)");
 			if(v.size()!= m_inputRecords.size()){
 				std::cout<<"metric information does not have enough data! dropping the record.\n";
@@ -130,7 +128,7 @@ const std::string& InputReader::getFileNameIpRecord() const {
 }
 
 void InputReader::fillTickerInfo(auto& indexMap) {
-	tickerInfo info;
+	IpTickerInfo info{};
 
 	auto key = indexMap[m_inputRecords["Ticker"]];
 
@@ -144,14 +142,15 @@ void InputReader::fillTickerInfo(auto& indexMap) {
 	auto tempBidRatioDenominator = stoi(indexMap[m_inputRecords.at("AskSize")]) + stoi(indexMap[m_inputRecords.at("BidSize")]);
 
 	auto it = m_tickerInfo.find(key);
+
 	/* if ticker any ticker is already present in the map augument its information else create it. */
 	if(it != m_tickerInfo.end()){
 		/*extract the index of the metrics from input metrics format map and use index to fill the metrics info */
 		it->second.pvDiffOfAskAndBid->push_back(tempDiffOfAskAndBid);
 		it->second.pvVolume->push_back(tempVolume);
 
-		it->second.pvTimeDiffBtwnTicker->push_back(stol(indexMap[m_inputRecords.at("Timestamp")]) - it->second.lastTimestamp);
-		it->second.lastTimestamp = stol(indexMap[m_inputRecords.at("Timestamp")]);
+		it->second.pvTimeDiffBtwnTicker->push_back(stol(indexMap[m_inputRecords.at("Timestamp")]) - *(it->second.pLastTimestamp) );
+		*(it->second.pLastTimestamp) = stol(indexMap[m_inputRecords.at("Timestamp")]);
 
 		it->second.pvBidRatioNumerator->push_back(tempBidRatioNumerator);
 		it->second.pvBidRatioDenominator->push_back(tempBidRatioDenominator);
@@ -159,18 +158,18 @@ void InputReader::fillTickerInfo(auto& indexMap) {
 	else{
 		/*extract the index of the metrics from input metrics format map and use index to fill the metrics info */
 
-		info.pvDiffOfAskAndBid 	  = std::make_shared<std::vector<double> >( std::vector<double>{tempDiffOfAskAndBid});
-		info.pvVolume 		  	  = std::make_shared<std::vector<int> >( std::vector<int>{tempVolume} );
-		info.pvTimeDiffBtwnTicker = std::make_shared<std::vector<long> >( std::vector<long> {stol(indexMap[m_inputRecords.at("Timestamp")])} );
-		info.pvBidRatioNumerator  = std::make_shared<std::vector<double> >( std::vector<double>{tempBidRatioNumerator} );
-		info.pvBidRatioDenominator= std::make_shared<std::vector<int> >( std::vector<int>{tempBidRatioDenominator} );
-		info.lastTimestamp 		  = stol(indexMap[m_inputRecords.at("Timestamp")]);
+		info.pvDiffOfAskAndBid 	  = std::make_shared<std::vector<double>>( std::vector<double>{tempDiffOfAskAndBid});
+		info.pvVolume 		  	  = std::make_shared<std::vector<int>>   ( std::vector<int>{tempVolume} );
+		info.pvTimeDiffBtwnTicker = std::make_shared<std::vector<long>>  ( std::vector<long> {stol(indexMap[m_inputRecords.at("Timestamp")])} );
+		info.pvBidRatioNumerator  = std::make_shared<std::vector<double>>( std::vector<double>{tempBidRatioNumerator} );
+		info.pvBidRatioDenominator= std::make_shared<std::vector<int>>	 ( std::vector<int>{tempBidRatioDenominator} );
+		info.pLastTimestamp 	  = std::make_shared<long>		         ( long{stol(indexMap[m_inputRecords.at("Timestamp")])});
 
-		m_tickerInfo.insert(make_pair(key,info));
+		m_tickerInfo.insert({key, std::move(info)});
 	}
 }
 
-const std::map<std::string, tickerInfo>& InputReader::getTickerInfo() const {
+const std::map<std::string, IpTickerInfo>& InputReader::getTickerInfo() const {
 	return m_tickerInfo;
 }
 

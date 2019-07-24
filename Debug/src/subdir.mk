@@ -8,7 +8,9 @@ CC_SRCS += \
 
 CPP_SRCS += \
 ../src/InputReader.cpp \
-../src/InputReader_test.cpp 
+../src/InputReader_test.cpp \
+../src/MetricCalulator.cpp \
+../src/TickerProcessor.cpp 
 
 CC_DEPS += \
 ./src/gtest_main.d 
@@ -16,11 +18,15 @@ CC_DEPS += \
 OBJS += \
 ./src/InputReader.o \
 ./src/InputReader_test.o \
+./src/MetricCalulator.o \
+./src/TickerProcessor.o \
 ./src/gtest_main.o 
 
 CPP_DEPS += \
 ./src/InputReader.d \
-./src/InputReader_test.d 
+./src/InputReader_test.d \
+./src/MetricCalulator.d \
+./src/TickerProcessor.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes

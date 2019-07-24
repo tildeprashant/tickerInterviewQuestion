@@ -16,7 +16,7 @@
 class InputReader {
 	std::string m_inputSpecefier;
 	std::map<std::string,int> m_inputRecords;
-	std::map<std::string,tickerInfo> m_tickerInfo;
+	std::map<std::string,IpTickerInfo> m_tickerInfo;
 	std::string m_fileIpFormat;
 	std::string m_fileIpRecord;
 public:
@@ -30,7 +30,7 @@ public:
 	const std::string& getFileNameIpFormat() const;
 	const std::string& getFileNameIpRecord() const;
 	void fillTickerInfo(auto& inputVector);
-	const std::map<std::string,tickerInfo>& getTickerInfo()const;
+	const std::map<std::string,IpTickerInfo>& getTickerInfo()const;
 	virtual ~InputReader();
 };
 
