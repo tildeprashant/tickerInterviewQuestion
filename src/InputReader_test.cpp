@@ -33,15 +33,6 @@ TEST_F(InputReader_test, verifyTickerInfo) {
 	auto tInfo = ip.getTickerInfo();
 
 	auto it = tInfo.find("T");
-	/*
-	GTEST_ASSERT_NE(it,tInfo.end());
-	EXPECT_EQ(tInfo.at("T").pvTimestamp->at(0),15051426);
-	EXPECT_FLOAT_EQ(tInfo.at("T").pvBid->at(0),47.46);
-	EXPECT_EQ(tInfo.at("T").pvBidSize->at(0),14);
-	EXPECT_FLOAT_EQ(tInfo.at("T").pvAsk->at(0),47.52);
-	EXPECT_EQ(tInfo.at("T").pvAskSize->at(0),44);
-	EXPECT_EQ(tInfo.at("T").pvVolume->at(0),10788);
-*/
 
 	it = tInfo.find("BC");
 	GTEST_ASSERT_NE(it,tInfo.end());
@@ -51,22 +42,16 @@ TEST_F(InputReader_test, verifyTickerInfo) {
 	EXPECT_FLOAT_EQ(tInfo.at("BC").pvBidRatioNumerator->at(0),1882.08);
 	EXPECT_FLOAT_EQ(tInfo.at("BC").pvBidRatioDenominator->at(0),24);
 
-
-	/*
-	EXPECT_EQ(tInfo.at("BC").pvTimestamp->at(1),15051427);
-	EXPECT_FLOAT_EQ(tInfo.at("BC").pvBid->at(1),90);
-	EXPECT_EQ(tInfo.at("BC").pvBidSize->at(1),10);
-	EXPECT_FLOAT_EQ(tInfo.at("BC").pvAsk->at(1),99.23);
-	EXPECT_EQ(tInfo.at("BC").pvAskSize->at(1),13);
+	EXPECT_NEAR(tInfo.at("BC").pvDiffOfAskAndBid->at(1),9.23,0.0001);
 	EXPECT_EQ(tInfo.at("BC").pvVolume->at(1),13);
+	EXPECT_EQ(tInfo.at("BC").pvTimeDiffBtwnTicker->at(1),1);
+	EXPECT_FLOAT_EQ(tInfo.at("BC").pvBidRatioNumerator->at(1),2162.3);
+	EXPECT_FLOAT_EQ(tInfo.at("BC").pvBidRatioDenominator->at(1),23);
 
-	EXPECT_EQ(tInfo.at("BC").pvTimestamp->at(2),15051428);
-	EXPECT_FLOAT_EQ(tInfo.at("BC").pvBid->at(2),95.11);
-	EXPECT_EQ(tInfo.at("BC").pvBidSize->at(2),11);
-	EXPECT_FLOAT_EQ(tInfo.at("BC").pvAsk->at(2),98.23);
-	EXPECT_EQ(tInfo.at("BC").pvAskSize->at(2),12);
+	EXPECT_NEAR(tInfo.at("BC").pvDiffOfAskAndBid->at(2),3.12,0.0001);
 	EXPECT_EQ(tInfo.at("BC").pvVolume->at(2),11);
-	*/
-
+	EXPECT_EQ(tInfo.at("BC").pvTimeDiffBtwnTicker->at(2),1);
+	EXPECT_FLOAT_EQ(tInfo.at("BC").pvBidRatioNumerator->at(2),2221.85);
+	EXPECT_FLOAT_EQ(tInfo.at("BC").pvBidRatioDenominator->at(2),23);
 }
 
