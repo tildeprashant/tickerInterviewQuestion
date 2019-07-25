@@ -33,9 +33,12 @@ size_t InputReader::readIoSpecifiers(const std::string& fileName) {
 	else {
 		std::string line{};
 
+		/* read input formmat */
 		getline(inFile,line);
 		m_inputRecords = this->readInputSpecifier(line);
 
+		/* read output formmat */
+		getline(inFile,line);
 		m_outputRecords = this->readInputSpecifier(line);
 		for(auto& i:m_outputRecords){
 			std::cout<<i.first<<" : "<<i.second<<"\n";
@@ -43,8 +46,6 @@ size_t InputReader::readIoSpecifiers(const std::string& fileName) {
 		ret = 0;
 		inFile.close();
 	}
-
-
 
 	return ret;
 }
@@ -157,6 +158,21 @@ void InputReader::fillTickerInfo(auto& indexMap) {
 
 const std::map<std::string, IpTickerInfo>& InputReader::getTickerInfo() const {
 	return m_tickerInfo;
+}
+
+void InputReader::calculateOutputMetrics() {
+/*	MetricCalulator mc(m_tickerInfo);
+	std::stringstream ss{};
+	mc.prepareOpTickerData();
+	for(auto& i: mc.getOpTickerData()) {
+		ss<<i.first<<", ";
+		for(int j=0;j<m_outputRecords.size();j++) {
+			ss<<i.second
+		}
+	}*/
+}
+
+const std::string& InputReader::getOutputString() {
 }
 
 InputReader::~InputReader() {

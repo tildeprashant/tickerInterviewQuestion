@@ -16,9 +16,12 @@
 class InputReader {
 	std::string m_inputSpecefier;
 	std::string m_outputSpecefier;
+	std::string m_outputString;
 	std::map<std::string,int> m_inputRecords;
 	std::map<std::string,int> m_outputRecords;
 	std::map<std::string,IpTickerInfo> m_tickerInfo;
+private:
+	void calculateOutputMetrics();
 public:
 	InputReader();
 	size_t readIoSpecifiers(const std::string& fileName);
@@ -27,6 +30,7 @@ public:
 	std::vector<std::string> tokenize(const std::string& input, const std::string delim="\\s+");
 	void fillTickerInfo(auto& inputVector);
 	const std::map<std::string,IpTickerInfo>& getTickerInfo()const;
+	const std::string& getOutputString();
 	virtual ~InputReader();
 };
 
