@@ -19,7 +19,7 @@ class InputReader_test : public ::testing::Test {
  protected:
 	InputReader ip;
 	void SetUp() override {
-		ip.setFileName("input.ini","marketdata_for_interview_test.csv");
+		//ip.setFileName("input.ini","marketdata_for_interview_test.csv");
 	}
  public:
   InputReader_test(){}

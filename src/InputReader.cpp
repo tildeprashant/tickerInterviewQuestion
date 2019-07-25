@@ -16,55 +16,54 @@ InputReader::InputReader():m_inputSpecefier{""} {
 
 }
 
-size_t InputReader::readInputFile() {
-	size_t ret = 0;
-	auto fileName = getFileNameIpFormat();
+size_t InputReader::readIoSpecifiers(const std::string& fileName) {
+	size_t ret = 1;
+
 	if(fileName.size()<1){
-		ret = 1;
+		std::cerr<<"readIoSpecifiers: file name is empty"<<"\n";
+		return ret;
 	}
 
 	std::ifstream inFile;
-	try{
-		inFile.open(fileName.c_str());
+	inFile.open(fileName.c_str());
+
+	if(!inFile.is_open()) {
+		std::cerr<<"unable to open input file: "<<fileName.c_str()<<"\n";
 	}
-	catch(std::exception& e){
-		std::cout<<e.what()<<"\n";
+	else {
+		std::string line{};
+
+		getline(inFile,line);
+		m_inputRecords = this->readInputSpecifier(line);
+
+		m_outputRecords = this->readInputSpecifier(line);
+		for(auto& i:m_outputRecords){
+			std::cout<<i.first<<" : "<<i.second<<"\n";
+		}
+		ret = 0;
 		inFile.close();
 	}
 
-	if (inFile.is_open()){
-		getline(inFile,m_inputSpecefier);
-		this->getInputRecords();
-		ret = 0;
-	}
-	inFile.close();
+
+
 	return ret;
 }
 
-std::string InputReader::getInputSpecifier() {
-
-	return m_inputSpecefier;
-}
-
-
-size_t InputReader::readRecords() {
-	size_t ret = 0;
+size_t InputReader::readRecords(const std::string& fileName) {
+	size_t ret = 1;
 	std::string line = "";
-	auto fileName = getFileNameIpRecord();
+
 	if(fileName.size()<1){
-		ret = 1;
+		std::cerr<<"readRecords: file name is empty"<<"\n";
+		return ret;
 	}
 
 	std::ifstream inFile;
-	try{
-		inFile.open(fileName.c_str());
+	inFile.open(fileName.c_str());
+	if(!inFile.is_open()){
+		std::cerr<<"unable to open input file: "<<fileName.c_str()<<"\n";
 	}
-	catch(std::exception& e){
-		std::cout<<e.what()<<"\n";
-		inFile.close();
-	}
-
-	if (inFile.is_open()){
+	else {
 		while(getline(inFile,line)) {
 			auto v = tokenize(line,R"(,|\r)");
 			if(v.size()!= m_inputRecords.size()){
@@ -75,27 +74,27 @@ size_t InputReader::readRecords() {
 			/* empty the vector for next records to be filled. */
 			v.clear();
 		}
-		ret = 0;
 	}
+	ret = 0;
 	inFile.close();
 	return ret;
 }
 
-std::map<std::string,int> InputReader::getInputRecords()  {
+std::map<std::string,int> InputReader::readInputSpecifier(const std::string& line)  {
 
-
-	/* trim beginnning and trailing angle brackets(<,>) from specifier string */
-	auto specifierString = std::regex_replace(m_inputSpecefier, std::regex(R"(^\s*<|^<|>\s$|>$)"), std::string(""));
+	std::map<std::string,int> tempMap{};
+	/* trim beginning and trailing angle brackets(<,>) from specifier string */
+	auto specifierString = std::regex_replace(line, std::regex(R"(^\s*<|^<|>\s$|>$)"), std::string(""));
 
 	auto v = tokenize(specifierString,R"(>,<)");
 	int i = 0;
 
 	/* prepare metric index map */
 	for(auto& item:v){
-		m_inputRecords.insert(std::make_pair(item,i++));
+		tempMap.insert(std::make_pair(item,i++));
 	}
 
-	return m_inputRecords;
+	return std::move(tempMap);
 }
 
 std::vector<std::string> InputReader::tokenize(const std::string& input, const std::string delim) {
@@ -112,19 +111,6 @@ std::vector<std::string> InputReader::tokenize(const std::string& input, const s
     copy(it,end,back_inserter(v));
 
     return move(v);
-}
-
-void InputReader::setFileName(std::string format, std::string recordFile) {
-	m_fileIpFormat = format;
-	m_fileIpRecord = recordFile;
-}
-
-const std::string& InputReader::getFileNameIpFormat() const {
-	return m_fileIpFormat;
-}
-
-const std::string& InputReader::getFileNameIpRecord() const {
-	return m_fileIpRecord;
 }
 
 void InputReader::fillTickerInfo(auto& indexMap) {

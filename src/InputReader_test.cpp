@@ -6,32 +6,32 @@
  *      Author: prashant
  */
 
+#include <MetricCalulator.h>
 #include <tickerInfo.h>
 #include "InputReader_test.h"
 
-#include "MetricCalulator.h"
 
 TEST_F(InputReader_test, testEmptyFileName) {
 
 	InputReader ip;
-	EXPECT_EQ(static_cast<size_t>(1), ip.readInputFile());
+	EXPECT_EQ(static_cast<size_t>(1), ip.readIoSpecifiers(""));
 }
 
 TEST_F(InputReader_test, testMetricCount) {
 
-	EXPECT_EQ(static_cast<size_t>(0), ip.readInputFile());
-    EXPECT_EQ(static_cast<size_t>(7),ip.getInputRecords().size());
+	EXPECT_EQ(static_cast<size_t>(0), ip.readIoSpecifiers("input.ini"));
+    //EXPECT_EQ(static_cast<size_t>(7),ip.readInputSpecifier().size());
 }
 
 TEST_F(InputReader_test, fileReadSuccess) {
-	EXPECT_EQ(static_cast<size_t>(0), ip.readInputFile());
-	EXPECT_EQ(static_cast<size_t>(0), ip.readRecords());
+	EXPECT_EQ(static_cast<size_t>(0), ip.readIoSpecifiers("input.ini"));
+	EXPECT_EQ(static_cast<size_t>(0), ip.readRecords("marketdata_for_interview_test.csv"));
 }
 
 
 TEST_F(InputReader_test, verifyTickerInfo) {
-	EXPECT_EQ(static_cast<size_t>(0), ip.readInputFile());
-	EXPECT_EQ(static_cast<size_t>(0), ip.readRecords());
+	EXPECT_EQ(static_cast<size_t>(0), ip.readIoSpecifiers("input.ini"));
+	EXPECT_EQ(static_cast<size_t>(0), ip.readRecords("marketdata_for_interview_test.csv"));
 	auto tInfo = ip.getTickerInfo();
 
 	auto it = tInfo.find("BC");
@@ -56,14 +56,14 @@ TEST_F(InputReader_test, verifyTickerInfo) {
 }
 
 TEST_F(InputReader_test, testOutputData) {
-	EXPECT_EQ(static_cast<size_t>(0), ip.readInputFile());
-	EXPECT_EQ(static_cast<size_t>(0), ip.readRecords());
+	EXPECT_EQ(static_cast<size_t>(0), ip.readIoSpecifiers("input.ini"));
+	EXPECT_EQ(static_cast<size_t>(0), ip.readRecords("marketdata_for_interview_test.csv"));
 
 	MetricCalulator mc(ip.getTickerInfo());
 	mc.prepareOpTickerData();
 	auto opTickerData = mc.getOpTickerData().find("BC");
 
-	EXPECT_FLOAT_EQ(opTickerData->second.maxOfBid,9.23);
+	EXPECT_NEAR(opTickerData->second.maxOfBid,9.23, 0.0001);
 	EXPECT_NEAR(opTickerData->second.minOfBid,1.42,0.0001);
 	EXPECT_EQ(opTickerData->second.sumOfVolume,38);
 	EXPECT_EQ(opTickerData->second.maxTimeDiffBtwnTicker,15051426);
