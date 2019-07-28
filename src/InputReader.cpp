@@ -167,15 +167,14 @@ const std::vector<std::string>& InputReader::getOutputString() {
 	MetricCalulator mc(m_tickerInfo,m_outputRecords);
 
 	mc.prepareOpTickerData();
-	auto m = mc.getOpTickerMap();
-	for(auto& i:m){
+	auto vv = mc.getOpTickerMap();
+	for(auto& i:vv){
 		std::stringstream ss{};
-		ss<<i.first;
-		for(auto& j:i.second){
-			ss<<","<<j;
+		for(auto& j:i){
+			ss<<j<<",";
 		}
-		std::cout<<ss.str()<<"\n";
-		m_output.push_back(std::move(ss.str()));
+		/* remove last "," and push the string in the o/p vector */
+		m_output.push_back(std::move(ss.str().erase(ss.str().size()-1)));
 	}
 	return m_output;
 }

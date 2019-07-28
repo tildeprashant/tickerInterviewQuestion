@@ -64,6 +64,7 @@ TEST_F(InputReader_test, testOutputData) {
 	std::regex delim(R"(,)");
 
 	std::vector<std::string> opStrVec = ip.getOutputString();
+
 	auto it = std::find_if(opStrVec.begin(), opStrVec.end(), [](const std::string& s){
 		return (s.find("BC") != std::string::npos);
 	});

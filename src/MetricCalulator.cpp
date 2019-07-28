@@ -58,20 +58,19 @@ MetricCalulator::~MetricCalulator() {
 	// TODO Auto-generated destructor stub
 }
 
-const std::map<std::string, std::vector<std::string>>& MetricCalulator::getOpTickerMap() const {
-	return m_opTickerMap;
+const std::vector<std::vector<std::string>>& MetricCalulator::getOpTickerMap() const {
+	return m_vvTickerMap;
 }
 
 void MetricCalulator::setOpTickerMap(const OpTickerInfo& info) {
 
-	auto key = info.ticker;
-	std::vector<std::string> v(m_refOpRecords.size() -1); //-1 because "Ticker" will be saved as key.
+	std::vector<std::string> v(m_refOpRecords.size()); //-1 because "Ticker" will be saved as key.
 
-
-	v[m_refOpRecords.at("maxOfBid")-1] = std::to_string(info.maxOfBid).substr(0, std::to_string(info.maxOfBid).find(".") + 4);
-	v[m_refOpRecords.at("minOfBid")-1] = std::to_string(info.minOfBid).substr(0, std::to_string(info.minOfBid).find(".") + 4);
-	v[m_refOpRecords.at("sumOfVolume")-1] = std::to_string(info.sumOfVolume);
-	v[m_refOpRecords.at("maxTimeDiffBtwnTicker")-1] = std::to_string(info.maxTimeDiffBtwnTicker);
-	v[m_refOpRecords.at("bidRatio")-1] = std::to_string(info.bidRatio).substr(0, std::to_string(info.bidRatio).find(".") + 4);
-	m_opTickerMap.insert({std::move(key), std::move(v)});
+	v[m_refOpRecords.at("Ticker")] = info.ticker;
+	v[m_refOpRecords.at("maxOfBid")] = std::to_string(info.maxOfBid).substr(0, std::to_string(info.maxOfBid).find(".") + 4);
+	v[m_refOpRecords.at("minOfBid")] = std::to_string(info.minOfBid).substr(0, std::to_string(info.minOfBid).find(".") + 4);
+	v[m_refOpRecords.at("sumOfVolume")] = std::to_string(info.sumOfVolume);
+	v[m_refOpRecords.at("maxTimeDiffBtwnTicker")] = std::to_string(info.maxTimeDiffBtwnTicker);
+	v[m_refOpRecords.at("bidRatio")] = std::to_string(info.bidRatio).substr(0, std::to_string(info.bidRatio).find(".") + 4);
+	m_vvTickerMap.push_back(std::move(v));
 }

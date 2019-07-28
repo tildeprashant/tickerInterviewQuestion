@@ -16,13 +16,13 @@ class MetricCalulator {
 	const std::map<std::string, IpTickerInfo>& m_refTickerData;
 	std::map<std::string,int>& m_refOpRecords;
 	std::vector<OpTickerInfo> m_opTickerData;
-	std::map<std::string, std::vector<std::string>> m_opTickerMap;
+	std::vector<std::vector<std::string>> m_vvTickerMap;
 public:
 	MetricCalulator(const std::map<std::string, IpTickerInfo>& tickerData, std::map<std::string,int>& records);
 	void prepareOpTickerData();
 	virtual ~MetricCalulator();
 	const std::map<std::string, OpTickerInfo>& getOpTickerData() const;
-	const std::map<std::string, std::vector<std::string>>& getOpTickerMap() const;
+	const std::vector<std::vector<std::string>>& getOpTickerMap() const;
 	void setOpTickerMap(const OpTickerInfo& info);
 };
 
