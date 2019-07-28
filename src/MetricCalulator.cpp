@@ -8,12 +8,14 @@
 #include <MetricCalulator.h>
 #include <algorithm>
 #include <numeric>
+#include <iostream>
 
 /**
  *
  * @param tickerData
  */
-MetricCalulator::MetricCalulator(const std::map<std::string, IpTickerInfo>& tickerData):m_refTickerData(tickerData),m_opTickerData{} {
+MetricCalulator::MetricCalulator(const std::map<std::string, IpTickerInfo>& tickerData, std::map<std::string,int>& records)
+								:m_refTickerData{tickerData},m_refOpRecords{records} {
 
 }
 
@@ -24,6 +26,9 @@ void MetricCalulator::prepareOpTickerData() {
 	OpTickerInfo temp{};
 
 	for(auto& i: m_refTickerData){
+		/* ticker */
+		temp.ticker = i.first;
+
 		/* calculate Max of (Ask - Bid) */
 		temp.maxOfBid = *(std::max_element( i.second.pvDiffOfAskAndBid->begin(), i.second.pvDiffOfAskAndBid->end() ));
 
@@ -40,15 +45,33 @@ void MetricCalulator::prepareOpTickerData() {
 		temp.bidRatio = std::accumulate( i.second.pvBidRatioNumerator->begin(), i.second.pvBidRatioNumerator->end(), 0.0 ) /
 						std::accumulate( i.second.pvBidRatioDenominator->begin(), i.second.pvBidRatioDenominator->end(), 0.0 );
 
-		m_opTickerData.insert({i.first, std::move(temp)});
+		//m_opTickerData.push_back(std::move(temp));
+		this->setOpTickerMap(temp);
 	}
 }
 
-const std::map<std::string, OpTickerInfo>& MetricCalulator::getOpTickerData() const {
+/*const std::vector<OpTickerInfo>& MetricCalulator::getOpTickerData() const {
 	return m_opTickerData;
-}
+}*/
 
 MetricCalulator::~MetricCalulator() {
 	// TODO Auto-generated destructor stub
 }
 
+const std::map<std::string, std::vector<std::string>>& MetricCalulator::getOpTickerMap() const {
+	return m_opTickerMap;
+}
+
+void MetricCalulator::setOpTickerMap(const OpTickerInfo& info) {
+
+	auto key = info.ticker;
+	std::vector<std::string> v(m_refOpRecords.size() -1); //-1 because "Ticker" will be saved as key.
+
+
+	v[m_refOpRecords.at("maxOfBid")-1] = std::to_string(info.maxOfBid).substr(0, std::to_string(info.maxOfBid).find(".") + 4);
+	v[m_refOpRecords.at("minOfBid")-1] = std::to_string(info.minOfBid).substr(0, std::to_string(info.minOfBid).find(".") + 4);
+	v[m_refOpRecords.at("sumOfVolume")-1] = std::to_string(info.sumOfVolume);
+	v[m_refOpRecords.at("maxTimeDiffBtwnTicker")-1] = std::to_string(info.maxTimeDiffBtwnTicker);
+	v[m_refOpRecords.at("bidRatio")-1] = std::to_string(info.bidRatio).substr(0, std::to_string(info.bidRatio).find(".") + 4);
+	m_opTickerMap.insert({std::move(key), std::move(v)});
+}

@@ -10,7 +10,9 @@
 #include <iostream>
 #include <fstream>
 #include <utility>
+#include <iomanip>
 
+#include "MetricCalulator.h"
 InputReader::InputReader():m_inputSpecefier{""} {
 	// TODO Auto-generated constructor stub
 
@@ -40,9 +42,6 @@ size_t InputReader::readIoSpecifiers(const std::string& fileName) {
 		/* read output formmat */
 		getline(inFile,line);
 		m_outputRecords = this->readInputSpecifier(line);
-		for(auto& i:m_outputRecords){
-			std::cout<<i.first<<" : "<<i.second<<"\n";
-		}
 		ret = 0;
 		inFile.close();
 	}
@@ -161,18 +160,24 @@ const std::map<std::string, IpTickerInfo>& InputReader::getTickerInfo() const {
 }
 
 void InputReader::calculateOutputMetrics() {
-/*	MetricCalulator mc(m_tickerInfo);
-	std::stringstream ss{};
-	mc.prepareOpTickerData();
-	for(auto& i: mc.getOpTickerData()) {
-		ss<<i.first<<", ";
-		for(int j=0;j<m_outputRecords.size();j++) {
-			ss<<i.second
-		}
-	}*/
+
 }
 
-const std::string& InputReader::getOutputString() {
+const std::vector<std::string>& InputReader::getOutputString() {
+	MetricCalulator mc(m_tickerInfo,m_outputRecords);
+
+	mc.prepareOpTickerData();
+	auto m = mc.getOpTickerMap();
+	for(auto& i:m){
+		std::stringstream ss{};
+		ss<<i.first;
+		for(auto& j:i.second){
+			ss<<","<<j;
+		}
+		std::cout<<ss.str()<<"\n";
+		m_output.push_back(std::move(ss.str()));
+	}
+	return m_output;
 }
 
 InputReader::~InputReader() {

@@ -20,6 +20,7 @@ class InputReader {
 	std::map<std::string,int> m_inputRecords;
 	std::map<std::string,int> m_outputRecords;
 	std::map<std::string,IpTickerInfo> m_tickerInfo;
+	std::vector<std::string> m_output;
 private:
 	void calculateOutputMetrics();
 public:
@@ -30,7 +31,7 @@ public:
 	std::vector<std::string> tokenize(const std::string& input, const std::string delim="\\s+");
 	void fillTickerInfo(auto& inputVector);
 	const std::map<std::string,IpTickerInfo>& getTickerInfo()const;
-	const std::string& getOutputString();
+	const std::vector<std::string>& getOutputString();
 	virtual ~InputReader();
 };
 

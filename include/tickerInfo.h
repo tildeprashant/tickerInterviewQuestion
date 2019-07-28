@@ -15,6 +15,7 @@ typedef struct IpTickerInfo {
 }IpTickerInfo;
 
 typedef struct OpTickerInfo {
+	std::string ticker;        //ticker
 	double maxOfBid;      	   //max of (Ask - Bid)
 	double minOfBid;      	   //min of (Ask - Bid)
 	int    sumOfVolume;   	   //sum of volume
